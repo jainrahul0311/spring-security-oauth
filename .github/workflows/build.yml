@@ -1,6 +1,6 @@
 name: Imaging Cloud Action
 env:
-  version: 0
+  version: 1
 on:
   push:
     branches:
