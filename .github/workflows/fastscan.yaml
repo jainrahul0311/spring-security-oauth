@@ -1,23 +1,19 @@
-name: Run Fast Scan
-
+name: Imaging Cloud Analyzer Action
+env:
+  version: 1
 on:
   push:
     branches:
+      - master
       - main
   workflow_dispatch:
 jobs:
-  run-fastscan:
+  run-imaging-cloud-analyzer:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Pull docker image
-        run: docker pull castimaging/fast-scan-java-cli:1.8.11
-
-      - name: Run Fast Scan
+        uses: actions/checkout@v4
+      - name: Run Imaging Cloud Action
         run: |
-         cd ${{ github.workspace }}
-          git_folder=$(basename "$(git rev-parse --show-toplevel)") 
-          # The git folder name is mapped to the project name
-          docker run -v $(pwd):/fastScan/sourceCode castimaging/fast-scan-java-cli:1.8.11 /fastScan/sourceCode -s https://d2xekhfunbrl0c.cloudfront.net --repoId ${{github.repository_id}} --runId ${{github.run_id}} --runAttempt ${{ github.run_attempt }} -n $git_folder -g "$GITHUB_CONTEXT"
+          cd ${{github.workspace}}
+          docker run -v $(pwd):/home/carl/extras/source -e IMAGING_CLOUD_API_KEY=${{secrets.IMAGING_CLOUD_API_KEY}} -e IMAGING_CLOUD_ACTION_FILE_VERSION=${{env.version}} -e IMAGING_CLOUD_URL="https://imaging-dev.castsoftware.io" castimaging/imaging-cloud-action:dev
